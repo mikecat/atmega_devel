@@ -149,8 +149,8 @@
 1001 001r rrrr 0001	STZ+ Rr	000xxxxx
 1001 001r rrrr 0010	ST-Z Rr	000xxxxx
 10q0 qq1r rrrr 0qqq	STDZ q Rr	00xxxxxx 000xxxxx
-1001 001d dddd 0000|kkkk kkkk kkkk kkkk	STS k Rr	000xxxxx xxxxxxxxxxxxxxxx
-1010 1kkk dddd kkkk	STS16 k Rr	0xxxxxxx 0001xxxx
+1001 001r rrrr 0000|kkkk kkkk kkkk kkkk	STS k Rr	000xxxxx xxxxxxxxxxxxxxxx
+1010 1kkk rrrr kkkk	STS16 k Rr	0xxxxxxx 0001xxxx
 0001 10rd dddd rrrr	SUB Rd Rr	000xxxxx 000xxxxx
 0101 KKKK dddd KKKK	SUBI Rd K	0001xxxx xxxxxxxx
 1001 010d dddd 0010	SWAP Rd	000xxxxx
