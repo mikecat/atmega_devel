@@ -116,7 +116,7 @@ for(my $i=0;$i<@input_data;$i++) {
 		# 数値データを得る
 		my $num_invalid=0;
 		my $num;
-		if($opland_list[$j] =~ /\A-?(0X?)[0-9]+\z/) {
+		if($opland_list[$j] =~ /\A-?(0[XB]?)?[0-9]+\z/) {
 			# 数値
 			my ($num_ret,$error)=&str2int($opland_list[$j]);
 			if($error ne "") {
