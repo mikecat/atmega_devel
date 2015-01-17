@@ -69,6 +69,15 @@ while(my $line=<STDIN>) {
 				$label_list{$name}=$value;
 			}
 		}
+	} elsif($line =~ /\A!ORG/) {
+		# 出力位置(word単位)の指定、後戻りはできない
+		my ($org,$value_str)=split(/ +/,$line,2);
+		my ($value,$error)=&str2int($value_str);
+		if($error ne "") {
+			warn "line $lineno: $error\n";
+		} else {
+			$addr=$value;
+		}
 	} else {
 		# 命令
 		my ($command_name,$oplands)=split(/ +/,$line,2);
@@ -84,6 +93,7 @@ while(my $line=<STDIN>) {
 }
 
 my @output_bin = ();
+my $printed_lines = 0;
 
 for(my $i=0;$i<@input_data;$i++) {
 	my ($lineno,$addr,$line,$oplands,$bin,$bin_tmpl,$masks)=split(/\t/,$input_data[$i]);
@@ -158,9 +168,18 @@ for(my $i=0;$i<@input_data;$i++) {
 				push(@output_bin, &bintext_to_hex($bin_list[$j]));
 			}
 		} else {
-			print $bin_list[$j];
-			if($j==0){print " $line";}
-			print "\n";
+			if ($printed_lines > int($addr)+$j) {
+				warn "line $lineno: address to output is over current address\n";
+			} else {
+				while ($printed_lines < int($addr)+$j) {
+					print "1111 1111 1111 1111\n";
+					$printed_lines++;
+				}
+				print $bin_list[$j];
+				if($j==0){print " $line";}
+				print "\n";
+				$printed_lines++;
+			}
 		}
 	}
 }
