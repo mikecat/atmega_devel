@@ -82,7 +82,7 @@
 1001 001d dddd 0111	LAT Rd	000xxxxx
 1001 000d dddd 1100	LDX Rd	000xxxxx
 1001 000d dddd 1101	LDX+ Rd	000xxxxx
-1001 000d dddd 1110 LD-X Rd	000xxxxx
+1001 000d dddd 1110	LD-X Rd	000xxxxx
 1000 000d dddd 1000	LDY Rd	000xxxxx
 1001 000d dddd 1001	LDY+ Rd	000xxxxx
 1001 000d dddd 1010	LD-Y Rd	000xxxxx
@@ -101,7 +101,7 @@
 1001 010d dddd 0110	LSR Rd	000xxxxx
 0010 11rd dddd rrrr	MOV Rd Rr	000xxxxx 000xxxxx
 0000 0001 dddd rrrr	MOVW Rd Rr	000xxxx0 000xxxx0
-1001 11rd dddd rrrr MUL Rd Rr	000xxxxx 000xxxxx
+1001 11rd dddd rrrr	MUL Rd Rr	000xxxxx 000xxxxx
 0000 0010 dddd rrrr	MULS Rd Rr	0001xxxx 0001xxxx
 0000 0011 0ddd 0rrr	MULSU Rd Rr	00010xxx 00010xxx
 1001 010d dddd 0001	NEG Rd	000xxxxx
@@ -110,8 +110,8 @@
 0110 KKKK dddd KKKK	ORI Rd K	0001xxxx xxxxxxxx
 1011 1AAr rrrr AAAA	OUT A Rr	00xxxxxx 000xxxxx
 1001 000d dddd 1111	POP Rd	000xxxxx
-1001 001r rrrr 1111 PUSH Rr	000xxxxx
-1101 kkkk kkkk kkkk RCALL k	Rxssssxxxxxxxxxxx
+1001 001r rrrr 1111	PUSH Rr	000xxxxx
+1101 kkkk kkkk kkkk	RCALL k	Rxssssxxxxxxxxxxx
 1001 0101 0000 1000	RET	
 1001 0101 0001 1000	RETI	
 1100 kkkk kkkk kkkk	RJMP k	Rxssssxxxxxxxxxxx
