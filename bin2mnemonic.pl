@@ -83,7 +83,9 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 				}
 			}
 			if ($ok) {
-				print $inst;
+				my ($opecode, $operand) = split(/ /, $inst, 2);
+				my @operand2 = &decode_operands($current_bin2, $data, $tmpl, $operand, ($i + @bin_data) >> 1);
+				print $opecode." ".join(",", @operand2);
 				print "\n";
 				$i += 2 * (@bin_data - 1);
 				$matched = 1;
@@ -119,4 +121,76 @@ sub bintext_match {
 		}
 	}
 	return 1;
+}
+
+sub decode_operands {
+	my ($data, $template_data, $operand_template, $operands_str, $address) = @_;
+	my @templates = split(/ /, $operand_template);
+	my @operands = split(/ /, $operands_str);
+	my $len = length($template_data);
+	for (;;) {
+		# データを順に見ていく
+		for (my $i = 0; $i < $len; $i++) {
+			# 各オペランドのテンプレートを処理
+			for (my $j = 0; $j < @templates; $j++) {
+				# そのオペランドに対応するデータか?
+				if (substr($template_data, $i, 1) eq substr($operands[$j], -1, 1)) {
+					# テンプレートを見ていく
+					for (my $k = 0; $k < length($templates[$j]); $k++) {
+						if (substr($templates[$j], $k, 1) eq "x") {
+							# そのまま反映
+							substr($templates[$j], $k, 1) = substr($data, $i, 1);
+							last;
+						} elsif (substr($templates[$j], $k, 1) eq "X") {
+							# 反転して反映
+							substr($templates[$j], $k, 1) = (substr($data, $i, 1) eq "0" ? "1" : "0");
+							last;
+						}
+					}
+					last;
+				}
+			}
+		}
+		# オペランドを補完する
+		my $need_again = 0;
+		for (my $i = 0; $i < @templates; $i++) {
+			for (my $j = 0; $j < length($templates[$i]); $j++) {
+				if (substr($templates[$i], $j, 1) eq "s") {
+					# MSB(符号ビット)と同じ
+					if (substr($templates[$i], 0, 1) eq "R") {
+						substr($templates[$i], $j, 1) = substr($templates[$i], 1, 1);
+					} else {
+						substr($templates[$i], $j, 1) = substr($templates[$i], 0, 1);
+					}
+				} elsif (substr($templates[$i], $j, 1) eq "*") {
+					# ドントケア
+					substr($templates[$i], $j, 1) = "0";
+				} elsif (substr($templates[$i], $j, 1) eq "x" || substr($templates[$i], $j, 1) eq "X") {
+					# データを入れる位置が残っている(無いだろうけど)
+					$need_again = 1;
+				}
+			}
+		}
+		unless ($need_again) {last;}
+	}
+	my @ret = ();
+	for (my $i = 0; $i < @templates; $i++) {
+		my $num_str = $templates[$i];
+		my $num;
+		my $offset = 0;
+		if (substr($num_str, 0, 1) eq "R") {
+			$num_str = substr($num_str, 1);
+			$offset = $address;
+		}
+		if (substr($num_str, 0, 1) eq "1") {
+			$num_str =~ s/0/z/g;
+			$num_str =~ s/1/0/g;
+			$num_str =~ s/z/1/g;
+			$num = -(oct("0b" . $num_str) + 1);
+		} else {
+			$num = oct("0b" . $num_str);
+		}
+		push(@ret, $num + $offset);
+	}
+	return @ret;
 }
