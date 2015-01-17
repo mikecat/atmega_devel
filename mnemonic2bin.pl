@@ -13,7 +13,7 @@ while(my $line=<COMMAND>) {
 	if($line eq "" || substr($line,0,1) eq "#"){next;}
 	# 命令名を取得する
 	my $name="";
-	$line =~ s/\t([A-Z]+)([ \t])/$name=$1,$2 eq "\t"?"\t\t":"\t"/e;
+	$line =~ s/\t([A-Z+-]+)([ \t])/$name=$1,$2 eq "\t"?"\t\t":"\t"/e;
 	if($name ne "") {
 		$convert_table{$name}=$line;
 	}
