@@ -78,6 +78,16 @@ while(my $line=<STDIN>) {
 		} else {
 			$addr=$value;
 		}
+	} elsif($line =~ /\A!WORD/) {
+		# データの直接配置
+		my ($word,$value_str)=split(/ +/,$line,2);
+		my ($value,$error)=&str2int($value_str);
+		if($error ne "") {
+			warn "line $lineno: $error\n";
+		} else {
+			push(@input_data,"$lineno\t$addr\t$line\t\t".&num_to_bintext($value)."\t\t");
+			$addr++;
+		}
 	} else {
 		# 命令
 		my ($command_name,$oplands)=split(/ +/,$line,2);
@@ -295,4 +305,14 @@ sub bintext_to_hex {
 	my ($in) = @_;
 	$in =~ s/[^01]//g;
 	return oct("0b" . $in);
+}
+
+sub num_to_bintext {
+	my ($in) = @_;
+	my $out = "";
+	for(my $i=0;$i<16;$i++) {
+		if($i>0 && $i%4==0){$out.=" ";}
+		$out.= (($in>>(15-$i))&1)?1:0;
+	}
+	return $out;
 }
