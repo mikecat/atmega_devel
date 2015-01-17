@@ -20,6 +20,14 @@ while(my $line=<COMMAND>) {
 }
 close(COMMAND);
 
+my $output_hex = 1;
+
+for (my $i = 0; $i < @ARGV; $i++) {
+	if ($ARGV[$i] eq "--bintext") {
+		$output_hex = 0;
+	}
+}
+
 my %label_list={};
 my @input_data=();
 my $addr=0;
@@ -74,6 +82,8 @@ while(my $line=<STDIN>) {
 		}
 	}
 }
+
+my @output_bin = ();
 
 for(my $i=0;$i<@input_data;$i++) {
 	my ($lineno,$addr,$line,$oplands,$bin,$bin_tmpl,$masks)=split(/\t/,$input_data[$i]);
@@ -140,10 +150,48 @@ for(my $i=0;$i<@input_data;$i++) {
 		}
 	}
 	for(my $j=0;$j<@bin_list;$j++) {
-		print $bin_list[$j];
-		if($j==0){print " $line";}
-		print "\n";
+		if ($output_hex) {
+			if (@output_bin > int($addr)+$j) {
+				warn "line $lineno: address to output is over current address\n";
+			} else {
+				while (@output_bin < int($addr)+$j) {push(@output_bin, -1);}
+				push(@output_bin, &bintext_to_hex($bin_list[$j]));
+			}
+		} else {
+			print $bin_list[$j];
+			if($j==0){print " $line";}
+			print "\n";
+		}
 	}
+}
+
+if ($output_hex) {
+	for (my $i = 0; $i < @output_bin; $i += 8) {
+		my $start = 0;
+		my $data_exist = 0;
+		for (my $j = 0; $j <= 8 && $i + $j <= @output_bin; $j++) {
+			if ($j < 8 && $i + $j < @output_bin && $output_bin[$i + $j] >= 0) {
+				$data_exist = 1;
+			} else {
+				if ($data_exist && $start < $j) {
+					my $out = sprintf("%02X%04X00", ($j - $start) * 2, ($i + $start) * 2);
+					for (my $k = $start; $k < $j; $k++) {
+						$out .= sprintf("%02X%02X",
+							$output_bin[$i + $k] & 0xff, ($output_bin[$i + $k] >> 8) & 0xff);
+					}
+					my $len = length($out);
+					my $check = 0;
+					for (my $k = 0; $k < $len; $k += 2) {
+						$check += hex(substr($out, $k, 2));
+					}
+					printf ":%s%02X\n", $out, (256 - $check) & 0xff;
+				}
+				$start = $j + 1;
+				$data_exist = 0;
+			}
+		}
+	}
+	print ":00000001FF\n";
 }
 
 sub str2int {
@@ -222,4 +270,10 @@ sub num2mask {
 		}
 	}
 	return ($ret,"");
+}
+
+sub bintext_to_hex {
+	my ($in) = @_;
+	$in =~ s/[^01]//g;
+	return oct("0b" . $in);
 }
