@@ -1,0 +1,159 @@
+# シャープ(いげた)で始まる行はコメント
+# 変換後文字列[TAB]ニモニック[TAB]数値マスク
+# 変換後文字列 : 複数ワードは|で区切る
+# ニモニック : オペランドの区切りは,ではなくスペースを使う
+# ニモニック→変換後 : 文字で対応付ける
+# ニモニック→数値マスク : 順番で対応付ける
+# 数値マスクの書き方
+#   先頭にR→指定したデータから(今の位置のアドレス+命令ワード数)を引いたものを使う
+#   0 : 0じゃないとダメ
+#   1 : 1じゃないとダメ
+#   x : どっちでもいい(反映させる)
+#   X : どっちでもいい(反転して反映させる)
+#   s : MSBと同じじゃないとダメ
+#   * : ドントケア
+# 要求されたデータが用意したデータより長い場合は循環させる
+0001 11rd dddd rrrr	ADC Rd Rr	000xxxxx 000xxxxx
+0000 11rd dddd rrrr	ADD Rd Rr	000xxxxx 000xxxxx
+1001 0110 KKdd KKKK	ADIW Rd K	00011xx0 00xxxxxx
+0010 00rd dddd rrrr	AND Rd Rr	000xxxxx 000xxxxx
+0111 KKKK dddd KKKK	ANDI Rd K	0001xxxx xxxxxxxx
+1001 010d dddd 0101	ASR Rd	000xxxxx
+1001 0100 1sss 1000	BCLR s	00000xxx
+1111 100d dddd 0bbb	BLD Rd b	000xxxxx 00000xxx
+1111 01kk kkkk ksss	BRBC s k	00000xxx Rxsxxxxxx
+1111 00kk kkkk ksss	BRBS s k	00000xxx Rxsxxxxxx
+1111 01kk kkkk k000	BRCC k	Rxsxxxxxx
+1111 00kk kkkk k000	BRCS k	Rxsxxxxxx
+1001 0101 1001 1000	BREAK	
+1111 00kk kkkk k001	BREQ k	Rxsxxxxxx
+1111 01kk kkkk k100	BRGE k	Rxsxxxxxx
+1111 01kk kkkk k101	BRHC k	Rxsxxxxxx
+1111 00kk kkkk k101	BRHS k	Rxsxxxxxx
+1111 01kk kkkk k111	BRID k	Rxsxxxxxx
+1111 00kk kkkk k111	BRIE k	Rxsxxxxxx
+1111 00kk kkkk k000	BRLO k	Rxsxxxxxx
+1111 00kk kkkk k100	BRLT k	Rxsxxxxxx
+1111 00kk kkkk k010	BRMI k	Rxsxxxxxx
+1111 01kk kkkk k001	BRNE k	Rxsxxxxxx
+1111 01kk kkkk k010	BRPL k	Rxsxxxxxx
+1111 01kk kkkk k000	BRSH k	Rxsxxxxxx
+1111 01kk kkkk k110	BRTC k	Rxsxxxxxx
+1111 00kk kkkk k110	BRTS k	Rxsxxxxxx
+1111 01kk kkkk k011	BRVC k	Rxsxxxxxx
+1111 00kk kkkk k011	BRVS k	Rxsxxxxxx
+1001 0100 0sss 1000	BSET s	00000xxx
+1111 101d dddd 0bbb	BST Rd b	000xxxxx 00000xxx
+1001 010k kkkk 111k|kkkk kkkk kkkk kkkk	CALL k	00xxxxxxxxxxxxxxxxxxxxxx
+1001 1000 AAAA Abbb	CBI A b	000xxxxx 00000xxx
+0111 KKKK dddd KKKK	CBR Rd K	000xxxxx XXXXXXXX
+1001 0100 1000 1000	CLC	
+1001 0100 1101 1000	CLH	
+1001 0100 1111 1000	CLI	
+1001 0100 1010 1000	CLN	
+0010 01dd dddd dddd	CLR Rd	000xxxxx
+1001 0100 1100 1000	CLS	
+1001 0100 1110 1000	CLT	
+1001 0100 1011 1000	CLV	
+1001 0100 1001 1000	CLZ	
+1001 010d dddd 0000	COM Rd	000xxxxx
+0001 01rd dddd rrrr	CP Rd Rr	000xxxxx 000xxxxx
+0000 01rd dddd rrrr	CPC Rd Rr	000xxxxx 000xxxxx
+0011 KKKK dddd KKKK	CPI Rd K	0001xxxx xxxxxxxx
+0001 00rd dddd rrrr	CPSE Rd Rr	000xxxxx 000xxxxx
+1001 010d dddd 1010	DEC Rd	000xxxxx
+1001 0100 KKKK 1011	DES K	0000xxxx
+1001 0101 0001 1001	EICALL	
+1001 0100 0001 1001	EIJMP	
+1001 0101 1101 1000	ELPM1	
+1001 000d dddd 0110	ELPM2 Rd	000xxxxx
+1001 000d dddd 0111	ELPM3 Rd	000xxxxx
+0010 01rd dddd rrrr	EOR Rd Rr	000xxxxx 000xxxxx
+0000 0011 0ddd 1rrr	FMUL Rd Rr	00010xxx 00010xxx
+0000 0011 1ddd 0rrr	FMULS Rd Rr	00010xxx 00010xxx
+0000 0011 1ddd 1rrr	FMULSU Rd Rr	00010xxx 00010xxx
+1001 0101 0000 1001	ICALL	
+1001 0100 0000 1001	IJMP	
+1011 0AAd dddd AAAA	IN Rd A	000xxxxx 00xxxxxx
+1001 010d dddd 0011	INC Rd	000xxxxx
+1001 010k kkkk 110k|kkkk kkkk kkkk kkkk	JMP k	00xxxxxxxxxxxxxxxxxxxxxx
+1001 001d dddd 0110	LAC Rd	000xxxxx
+1001 001d dddd 0101	LAS Rd	000xxxxx
+1001 001d dddd 0111	LAT Rd	000xxxxx
+1001 000d dddd 1100	LDX Rd	000xxxxx
+1001 000d dddd 1101	LDX+ Rd	000xxxxx
+1001 000d dddd 1110 LD-X Rd	000xxxxx
+1000 000d dddd 1000	LDY Rd	000xxxxx
+1001 000d dddd 1001	LDY+ Rd	000xxxxx
+1001 000d dddd 1010	LD-Y Rd	000xxxxx
+10q0 qq0d dddd 1qqq	LDYQ Rd q	000xxxxx 00xxxxxx
+1000 000d dddd 0000	LDZ Rd	000xxxxx
+1001 000d dddd 0001	LDZ+ Rd	000xxxxx
+1001 000d dddd 0010	LD-Z Rd	000xxxxx
+10q0 qq0d dddd 0qqq	LDZQ Rd q	000xxxxx 00xxxxxx
+1110 KKKK dddd KKKK	LDI Rd K	0001xxxx xxxxxxxx
+1001 000d dddd 0000|kkkk kkkk kkkk kkkk	LDS Rd k	000xxxxx xxxxxxxxxxxxxxxx
+1010 0kkk dddd kkkk	LDS16 Rd k	0001xxxx 0xxxxxxx
+1001 0101 1100 1000	LPM	
+1001 000d dddd 0100	LPMZ Rd	000xxxxx
+1001 000d dddd 0101	LPMZ+ Rd	000xxxxx
+0000 11dd dddd dddd	LSL Rd	000xxxxx
+1001 010d dddd 0110	LSR Rd	000xxxxx
+0010 11rd dddd rrrr	MOV Rd Rr	000xxxxx 000xxxxx
+0000 0001 dddd rrrr	MOVW Rd Rr	000xxxx0 000xxxx0
+1001 11rd dddd rrrr MUL Rd Rr	000xxxxx 000xxxxx
+0000 0010 dddd rrrr	MULS Rd Rr	0001xxxx 0001xxxx
+0000 0011 0ddd 0rrr	MULSU Rd Rr	00010xxx 00010xxx
+1001 010d dddd 0001	NEG Rd	000xxxxx
+0000 0000 0000 0000	NOP	
+0010 10rd dddd rrrr	OR	Rd Rr	000xxxxx 000xxxxx
+0110 KKKK dddd KKKK	ORI Rd K	0001xxxx xxxxxxxx
+1011 1AAr rrrr AAAA	OUT A Rr	00xxxxxx 000xxxxx
+1001 000d dddd 1111	POP Rd	000xxxxx
+1001 001r rrrr 1111 PUSH Rr	000xxxxx
+1101 kkkk kkkk kkkk RCALL k	Rxssssxxxxxxxxxxx
+1001 0101 0000 1000	RET	
+1001 0101 0001 1000	RETI	
+1100 kkkk kkkk kkkk	RJMP k	Rxssssxxxxxxxxxxx
+0001 11dd dddd dddd	ROL Rd	000xxxxx
+1001 010d dddd 0111	ROR Rd	000xxxxx
+0000 10rd dddd rrrr	SBC Rd Rr	000xxxxx 000xxxxx
+0100 KKKK dddd KKKK	SBCI Rd K	0001xxxx xxxxxxxx
+1001 1010 AAAA Abbb	SBI A b	000xxxxx 00000xxx
+1001 1001 AAAA Abbb	SBIC A b	000xxxxx 00000xxx
+1001 1011 AAAA Abbb	SBIS A b	000xxxxx 00000xxx
+1001 0111 KKdd KKKK	SBIW Rd K	00011xx0 00xxxxxx
+0110 KKKK dddd KKKK	SBR Rd K	0001xxxx xxxxxxxx
+1111 110r rrrr 0bbb	SBRC Rr b	000xxxxx 00000xxx
+1111 111r rrrr 0bbb	SBRS Rr b	000xxxxx 00000xxx
+1001 0100 0000 1000	SEC	
+1001 0100 0101 1000	SEH	
+1001 0100 0111 1000	SEI	
+1001 0100 0010 1000	SEN	
+1110 1111 dddd 1111	SER Rd	0001xxxx
+1001 0100 0100 1000	SES	
+1001 0100 0110 1000	SET	
+1001 0100 0011 1000	SEV	
+1001 0100 0001 1000	SEZ	
+1001 0101 1000 1000	SLEEP	
+1001 0101 1110 1000	SPM	
+1001 0101 1111 1000	SPMZ+	
+1001 001r rrrr 1100	STX Rr	000xxxxx
+1001 001r rrrr 1101	STX+ Rr	000xxxxx
+1001 001r rrrr 1110	ST-X Rr	000xxxxx
+1000 001r rrrr 1000	STY Rr	000xxxxx
+1001 001r rrrr 1001	STY+ Rr	000xxxxx
+1001 001r rrrr 1010	ST-Y Rr	000xxxxx
+10q0 qq1r rrrr 1qqq	STDY q Rr	00xxxxxx 000xxxxx
+1000 001r rrrr 0000	STZ Rr	000xxxxx
+1001 001r rrrr 0001	STZ+ Rr	000xxxxx
+1001 001r rrrr 0010	ST-Z Rr	000xxxxx
+10q0 qq1r rrrr 0qqq	STDZ q Rr	00xxxxxx 000xxxxx
+1001 001d dddd 0000|kkkk kkkk kkkk kkkk	STS k Rr	000xxxxx xxxxxxxxxxxxxxxx
+1010 1kkk dddd kkkk	STS16 k Rr	0xxxxxxx 0001xxxx
+0001 10rd dddd rrrr	SUB Rd Rr	000xxxxx 000xxxxx
+0101 KKKK dddd KKKK	SUBI Rd K	0001xxxx xxxxxxxx
+1001 010d dddd 0010	SWAP Rd	000xxxxx
+0010 00dd dddd dddd	TST Rd	000xxxxx
+1001 0101 1010 1000	WDR	
+1001 001d dddd 0100	XCH Rd	000xxxxx
