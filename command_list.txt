@@ -106,7 +106,7 @@
 0000 0011 0ddd 0rrr	MULSU Rd Rr	00010xxx 00010xxx
 1001 010d dddd 0001	NEG Rd	000xxxxx
 0000 0000 0000 0000	NOP	
-0010 10rd dddd rrrr	OR	Rd Rr	000xxxxx 000xxxxx
+0010 10rd dddd rrrr	OR Rd Rr	000xxxxx 000xxxxx
 0110 KKKK dddd KKKK	ORI Rd K	0001xxxx xxxxxxxx
 1011 1AAr rrrr AAAA	OUT A Rr	00xxxxxx 000xxxxx
 1001 000d dddd 1111	POP Rd	000xxxxx
