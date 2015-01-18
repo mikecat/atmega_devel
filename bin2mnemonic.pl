@@ -85,8 +85,25 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 			if ($ok) {
 				my ($opecode, $operand) = split(/ /, $inst, 2);
 				my @operand2 = &decode_operands($current_bin2, $data, $tmpl, $operand, ($i + @bin_data) >> 1);
-				print $opecode." ".join(",", @operand2);
-				print "\n";
+				my $operand_out = "";
+				my @operands = split(/ /, $operand);
+				for (my $i = 0; $i < @operand2; $i++) {
+					if ($i > 0) {$operand_out .= ", ";}
+					if (substr($operands[$i], 0, 1) eq "R") {
+						# レジスタ
+						$operand_out .= "r$operand2[$i]";
+					} elsif ($operands[$i] eq "K") {
+						# データ定数
+						$operand_out .= sprintf("0x%02X", $operand2[$i]);
+					} elsif ($operands[$i] eq "k") {
+						# アドレス定数
+						$operand_out .= sprintf("0x%02X", $operand2[$i]);
+					} else {
+						# その他
+						$operand_out .= $operand2[$i];
+					}
+				}
+				print "$opecode $operand_out\n";
 				$i += 2 * (@bin_data - 1);
 				$matched = 1;
 				last;
