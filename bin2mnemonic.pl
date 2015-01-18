@@ -92,7 +92,7 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 				my $operand_out = "";
 				my @operands = split(/ /, $operand);
 				for (my $i = 0; $i < @operand2; $i++) {
-					if ($i > 0) {$operand_out .= ", ";}
+					$operand_out .= ($i > 0) ? ", " : " ";
 					if (substr($operands[$i], 0, 1) eq "R") {
 						# レジスタ
 						$operand_out .= "r$operand2[$i]";
@@ -112,7 +112,7 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 						$operand_out .= $operand2[$i];
 					}
 				}
-				push(@out_data, sprintf("L%04X\t%s %s", $i >> 1, $opecode, $operand_out));
+				push(@out_data, sprintf("L%04X\t%s%s", $i >> 1, $opecode, $operand_out));
 				$i += 2 * (@bin_data - 1);
 				$matched = 1;
 				last;
