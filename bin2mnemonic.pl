@@ -53,14 +53,18 @@ while(my $line = <STDIN>) {
 }
 
 my $current_addr = 0;
+my @out_data = ();
+my %requested_labels = {};
+my %available_labels = {};
 for (my $i = 0; $i < @input_data - 1; $i += 2) {
 	if ($input_data[$i] < 0 || $input_data[$i + 1] < 0) {next;}
 	my $current_data = $input_data[$i] | ($input_data[$i + 1] << 8);
 	my $current_bin = &num_to_bintext($current_data);
 	my $matched = 0;
 	if (($i >> 1) != $current_addr) {
-		printf "!org 0x%04X\n", ($i >> 1);
+		push(@out_data, sprintf("\t!org 0x%04X", ($i >> 1)));
 	}
+	$available_labels{sprintf("L%04X", $i >> 1)} = 1;
 	for (my $j = 0; $j < @convert_table; $j++) {
 		my ($data,$inst,$tmpl)=split(/\t/, $convert_table[$j]);
 		my @bin_data=split(/\|/, $data);
@@ -97,13 +101,15 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 						$operand_out .= sprintf("0x%02X", $operand2[$i]);
 					} elsif ($operands[$i] eq "k") {
 						# アドレス定数
-						$operand_out .= sprintf("0x%02X", $operand2[$i]);
+						my $label = sprintf("L%04X", $operand2[$i]);
+						$requested_labels{$label} = 1;
+						$operand_out .= $label;
 					} else {
 						# その他
 						$operand_out .= $operand2[$i];
 					}
 				}
-				print "$opecode $operand_out\n";
+				push(@out_data, sprintf("L%04X\t%s %s", $i >> 1, $opecode, $operand_out));
 				$i += 2 * (@bin_data - 1);
 				$matched = 1;
 				last;
@@ -111,9 +117,18 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 		}
 	}
 	unless ($matched) {
-		printf "!word 0x%04X\n", $current_data;
+		push(@out_data, sprintf("L%04X\t!word 0x%04X", $i >> 1));
 	}
 	$current_addr = ($i >> 1) + 1;
+}
+
+for (my $i = 0; $i < @out_data; $i++) {
+	my ($label, $line) = split(/\t/, $out_data[$i], 2);
+	if (exists($requested_labels{$label})) {
+		print "$label:\n";
+	}
+	$line =~ s/(L([0-9A-F]{4}))/exists($available_labels{$1})?$1:"0x".$2/eg;
+	print "\t$line\n";
 }
 
 sub num_to_bintext {
