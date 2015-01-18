@@ -62,7 +62,7 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 	my $current_bin = &num_to_bintext($current_data);
 	my $matched = 0;
 	if (($i >> 1) != $current_addr) {
-		push(@out_data, sprintf("\t!org 0x%04X", ($i >> 1)));
+		push(@out_data, sprintf("\t!ORG 0x%04X", ($i >> 1)));
 	}
 	$available_labels{sprintf("L%04X", $i >> 1)} = 1;
 	for (my $j = 0; $j < @convert_table; $j++) {
@@ -120,7 +120,7 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 		}
 	}
 	unless ($matched) {
-		push(@out_data, sprintf("L%04X\t!word 0x%04X", $i >> 1));
+		push(@out_data, sprintf("L%04X\t!WORD 0x%04X", $i >> 1));
 	}
 	$current_addr = ($i >> 1) + 1;
 }
