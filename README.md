@@ -6,11 +6,9 @@ AVRのプログラムを書くためのツールです。
 プログラムをAVRに書き込むには、
 [AVRを読み書きするやつ](https://github.com/mikecat/avr_io)などが利用できます。
 
-### 参考資料
-* [Atmel AVR 8-bit and 32-bit Microcontrollers](http://www.atmel.com/products/microcontrollers/avr/?tab=documents)  
-  このページの"AVR Instruction Set"にAVRの命令(ニモニックと機械語)が載っています。
+### 仕様
 
-### 擬似命令
+#### 擬似命令
 * ```!ORG address```  
   プログラムの出力位置をaddressに設定する。戻ることはできない。
 * ```!CONST name value```  
@@ -18,12 +16,21 @@ AVRのプログラムを書くためのツールです。
 * ```!WORD value```  
   1ワードのデータを直接指定して配置する。
 
+#### その他
+* X,Y,Zレジスタを使う命令は、このプログラムではX,Y,Zを命令にくっつけて書く。  
+  例：```ST Y+, r1``` → ```STY+ r1```
+
+### 参考資料
+* [Atmel AVR 8-bit and 32-bit Microcontrollers](http://www.atmel.com/products/microcontrollers/avr/?tab=documents)  
+  このページの"AVR Instruction Set"にAVRの命令(ニモニックと機械語)が載っています。
+
 ### 命令に関するメモ
 
 * 基本的に第一オペランドを第二オペランドを用いて処理し、第一オペランドに結果を格納する。  
   例：```SUB r1, r2``` → ```r1 -= r2```
-* X,Y,Zレジスタを使う命令は、このプログラムではX,Y,Zを命令にくっつけて書く。  
-  例：```ST Y+, r1``` → ```STY+ r1```
+* 条件分岐(brCC)の相対ジャンプは-64～63ワード
+* 相対ジャンプ(rjmp、rcall)は-2K～(2K-1)ワード
+* 絶対ジャンプ(jmp、call)命令は2ワード使用する
 
 x86命令     |似たAVR命令
 ------------|-----------
