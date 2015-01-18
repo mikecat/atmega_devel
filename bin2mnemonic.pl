@@ -100,10 +100,13 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 						# データ定数
 						$operand_out .= sprintf("0x%02X", $operand2[$i]);
 					} elsif ($operands[$i] eq "k") {
-						# アドレス定数
+						# プログラムアドレス定数
 						my $label = sprintf("L%04X", $operand2[$i]);
 						$requested_labels{$label} = 1;
 						$operand_out .= $label;
+					} elsif ($operands[$i] eq "m") {
+						# メモリアドレス定数
+						$operand_out .= sprintf("0x%04X", $operand2[$i]);
 					} else {
 						# その他
 						$operand_out .= $operand2[$i];

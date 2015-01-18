@@ -92,8 +92,8 @@
 1001 000d dddd 0010	LD-Z Rd	000xxxxx
 10q0 qq0d dddd 0qqq	LDZQ Rd q	000xxxxx 00xxxxxx
 1110 KKKK dddd KKKK	LDI Rd K	0001xxxx xxxxxxxx
-1001 000d dddd 0000|kkkk kkkk kkkk kkkk	LDS Rd k	000xxxxx xxxxxxxxxxxxxxxx
-1010 0kkk dddd kkkk	LDS16 Rd k	0001xxxx 0xxxxxxx
+1001 000d dddd 0000|mmmm mmmm mmmm mmmm	LDS Rd m	000xxxxx xxxxxxxxxxxxxxxx
+1010 0mmm dddd mmmm	LDS16 Rd m	0001xxxx 0xxxxxxx
 1001 0101 1100 1000	LPM	
 1001 000d dddd 0100	LPMZ Rd	000xxxxx
 1001 000d dddd 0101	LPMZ+ Rd	000xxxxx
@@ -149,8 +149,8 @@
 1001 001r rrrr 0001	STZ+ Rr	000xxxxx
 1001 001r rrrr 0010	ST-Z Rr	000xxxxx
 10q0 qq1r rrrr 0qqq	STDZ q Rr	00xxxxxx 000xxxxx
-1001 001r rrrr 0000|kkkk kkkk kkkk kkkk	STS k Rr	xxxxxxxxxxxxxxxx 000xxxxx
-1010 1kkk rrrr kkkk	STS16 k Rr	0xxxxxxx 0001xxxx
+1001 001r rrrr 0000|mmmm mmmm mmmm mmmm	STS m Rr	xxxxxxxxxxxxxxxx 000xxxxx
+1010 1mmm rrrr mmmm	STS16 m Rr	0xxxxxxx 0001xxxx
 0001 10rd dddd rrrr	SUB Rd Rr	000xxxxx 000xxxxx
 0101 KKKK dddd KKKK	SUBI Rd K	0001xxxx xxxxxxxx
 1001 010d dddd 0010	SWAP Rd	000xxxxx
