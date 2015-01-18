@@ -131,7 +131,10 @@ for (my $i = 0; $i < @out_data; $i++) {
 		print "$label:\n";
 	}
 	$line =~ s/(L([0-9A-F]{4}))/exists($available_labels{$1})?$1:"0x".$2/eg;
-	print "\t$line\n";
+	if (substr($line, 0, 5) ne "!ORG " && substr($line, 0, 7) ne "!CONST ") {
+		print "\t";
+	}
+	print "$line\n";
 }
 
 sub num_to_bintext {
