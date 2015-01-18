@@ -181,12 +181,14 @@ sub decode_operands {
 		if (substr($num_str, 0, 1) eq "R") {
 			$num_str = substr($num_str, 1);
 			$offset = $address;
-		}
-		if (substr($num_str, 0, 1) eq "1") {
-			$num_str =~ s/0/z/g;
-			$num_str =~ s/1/0/g;
-			$num_str =~ s/z/1/g;
-			$num = -(oct("0b" . $num_str) + 1);
+			if (substr($num_str, 0, 1) eq "1") {
+				$num_str =~ s/0/z/g;
+				$num_str =~ s/1/0/g;
+				$num_str =~ s/z/1/g;
+				$num = -(oct("0b" . $num_str) + 1);
+			} else {
+				$num = oct("0b" . $num_str);
+			}
 		} else {
 			$num = oct("0b" . $num_str);
 		}
