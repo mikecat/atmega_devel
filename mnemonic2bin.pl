@@ -69,7 +69,7 @@ while(my $line=<STDIN>) {
 				$label_list{$name}=$value;
 			}
 		}
-	} elsif($line =~ /\A!ORG/) {
+	} elsif($line =~ /\A!ORG /) {
 		# 出力位置(word単位)の指定、後戻りはできない
 		my ($org,$value_str)=split(/ +/,$line,2);
 		my ($value,$error)=&str2int($value_str);
@@ -78,7 +78,7 @@ while(my $line=<STDIN>) {
 		} else {
 			$addr=$value;
 		}
-	} elsif($line =~ /\A!WORD/) {
+	} elsif($line =~ /\A!WORD /) {
 		# データの直接配置
 		my ($word,$value_str)=split(/ +/,$line,2);
 		my ($value,$error)=&str2int($value_str);
