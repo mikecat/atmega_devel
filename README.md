@@ -8,6 +8,18 @@ AVRのプログラムを書くためのツールです。
 
 ### 仕様
 
+#### 使い方
+
+* mnemonic2bin.pl  
+  ```$ perl mnemonic2bin.pl [--bintext] < input_file > output_file```  
+  * 標準入力からスクリプトを入力すると、標準出力にhexファイルを書き出す。
+  * ```--bintext```オプションを指定すると、hexファイルではなく2進テキストを書き出す。
+  * errorが出た場合の出力は未定義。
+
+* bin2mnemonic.pl  
+  ```$ perl bin2mnemonic.pl < input_file > output_file```  
+  * 標準入力からhexファイルを入力すると、標準出力にスクリプトを書き出す。
+
 #### 擬似命令
 * ```!ORG address```  
   プログラムの出力位置をaddressに設定する。戻ることはできない。
