@@ -51,7 +51,7 @@
 1001 0100 1101 1000	CLH	
 1001 0100 1111 1000	CLI	
 1001 0100 1010 1000	CLN	
-0010 01dd dddd dddd	CLR Rd	000xxxxx
+0010 01Dd dddd DDDD	CLR Rd	000xxxxx
 1001 0100 1100 1000	CLS	
 1001 0100 1110 1000	CLT	
 1001 0100 1011 1000	CLV	
@@ -97,7 +97,7 @@
 1001 0101 1100 1000	LPM	
 1001 000d dddd 0100	LPMZ Rd	000xxxxx
 1001 000d dddd 0101	LPMZ+ Rd	000xxxxx
-0000 11dd dddd dddd	LSL Rd	000xxxxx
+0000 11Dd dddd DDDD	LSL Rd	000xxxxx
 1001 010d dddd 0110	LSR Rd	000xxxxx
 0010 11rd dddd rrrr	MOV Rd Rr	000xxxxx 000xxxxx
 0000 0001 dddd rrrr	MOVW Rd Rr	000xxxx0 000xxxx0
@@ -115,7 +115,7 @@
 1001 0101 0000 1000	RET	
 1001 0101 0001 1000	RETI	
 1100 kkkk kkkk kkkk	RJMP k	Rxssssxxxxxxxxxxx
-0001 11dd dddd dddd	ROL Rd	000xxxxx
+0001 11Dd dddd DDDD	ROL Rd	000xxxxx
 1001 010d dddd 0111	ROR Rd	000xxxxx
 0000 10rd dddd rrrr	SBC Rd Rr	000xxxxx 000xxxxx
 0100 KKKK dddd KKKK	SBCI Rd K	0001xxxx xxxxxxxx
@@ -154,6 +154,6 @@
 0001 10rd dddd rrrr	SUB Rd Rr	000xxxxx 000xxxxx
 0101 KKKK dddd KKKK	SUBI Rd K	0001xxxx xxxxxxxx
 1001 010d dddd 0010	SWAP Rd	000xxxxx
-0010 00dd dddd dddd	TST Rd	000xxxxx
+0010 00Dd dddd DDDD	TST Rd	000xxxxx
 1001 0101 1010 1000	WDR	
 1001 001d dddd 0100	XCH Rd	000xxxxx

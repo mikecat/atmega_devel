@@ -116,7 +116,7 @@ for(my $i=0;$i<@input_data;$i++) {
 		# 数値データを得る
 		my $num_invalid=0;
 		my $num;
-		if($opland_list[$j] =~ /\A-?(0[XB]?)?[0-9]+\z/) {
+		if($opland_list[$j] =~ /\A-?([0-9]+|0B[01]+|0X[0-9A-F]+)\z/) {
 			# 数値
 			my ($num_ret,$error)=&str2int($opland_list[$j]);
 			if($error ne "") {
@@ -152,6 +152,7 @@ for(my $i=0;$i<@input_data;$i++) {
 		# バイナリにマスクを適用する
 		my $target=$bin_tmpl_list[$j];
 		my $data_pos=0;
+		my $data_pos2=0;
 		if(substr($target,0,1) eq "R") {
 			if(substr($opland_list[$j],0,1) ne "R") {
 				warn "line $lineno: warning: number or label found where register expected\n";
@@ -165,6 +166,12 @@ for(my $i=0;$i<@input_data;$i++) {
 					substr($bin_list[$k],$l,1)=substr($masked_data,$data_pos,1);
 					$data_pos++;
 					if($data_pos>=$masked_data_len){$data_pos=0;}
+				}
+				# エイリアスになっているCLR, LSL, ROL, TST用の処理
+				if(substr($bin_list[$k],$l,1) eq "D" && $target eq "d") {
+					substr($bin_list[$k],$l,1)=substr($masked_data,$data_pos2,1);
+					$data_pos2++;
+					if($data_pos2>=$masked_data_len){$data_pos2=0;}
 				}
 			}
 		}
