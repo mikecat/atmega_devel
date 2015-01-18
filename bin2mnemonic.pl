@@ -84,7 +84,7 @@ for (my $i = 0; $i < @input_data - 1; $i += 2) {
 			}
 			if ($ok) {
 				my ($opecode, $operand) = split(/ /, $inst, 2);
-				my @operand2 = &decode_operands($current_bin2, $data, $tmpl, $operand, ($i + @bin_data) >> 1);
+				my @operand2 = &decode_operands($current_bin2, $data, $tmpl, $operand, ($i + 2 * @bin_data) >> 1);
 				my $operand_out = "";
 				my @operands = split(/ /, $operand);
 				for (my $i = 0; $i < @operand2; $i++) {
