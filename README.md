@@ -105,3 +105,32 @@ sar r8,1    |asr
 stc         |sec
 clc         |clc
 nop         |nop
+
+### ATmega328Pの機能に関するメモ
+
+#### EEPROM
+
+     |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0
+-----|-----|-----|-----|-----|-----|-----|-----|-----
+EEADH|  -  |  -  |  -  |  -  |  -  |  -  |EEAR9|EEAR8
+EEADL|EEAR7|EEAR6|EEAR5|EEAR4|EEAR3|EEAR2|EEAR1|EEAR0
+EEDR | MSB |     |     |     |     |     |     | LSB
+EECR |  -  |  -  |EEPM1|EEPM0|EERIE|EEMPE|EEPE |EERE
+
+* EEAR : アクセスするEEPROMのアドレス。初期値は未定義。
+* EEDR : EEPROMから読んだ/EEPROMに書き込むデータ
+* EEPM : 操作の選択(初期値は00)
+  * 00 : 消して書き込む(3.4ms)
+  * 01 : 消す(1.8ms)
+  * 10 : 書き込む(1.8ms)
+  * 11 : 予約
+* EERIE : 1にするとEEPEが0(ready)の時に割り込みを起こす
+* EEMPE : 1にしないとEEPEを1にしても何も起きない。1にした4サイクル後に0にされる。
+* EEPE : 0のときに1にすることでEEPROMに書き込む。
+* EERE : 1にするとEEPROMを読み込む(EEPEが0の時じゃないとダメ)。
+
+書き込み方
+1. EEPEとSPMEN(SPMCSR)が0になるまで待つ
+2. EEARとEEDRにアドレスとデータを設定する
+3. EEPEに0を書き込みながら、EEMPEに1を書き込む
+4. 4サイクル以内にEEPEに1を書き込む
