@@ -91,17 +91,28 @@ loop:
 wait:
 	ldi r17, 200
 wait_loop1:
-	ldi r18, 200
-	; ----- ここから
+	; ----- この地点から
+	ldi r18, 199
 wait_loop2:
+	; ---------- ここから
 	ldi r19, 65
 wait_loop3:
 	dec r19
 	brne wait_loop3
 	nop
+	nop
 	dec r18
 	brne wait_loop2
-	; ----- ここ(ジャンプする)までで1周200クロック
+	; ---------- ここ(ジャンプする)までで1周200クロック
+	; ----- この地点まで39800クロック
+	; -- この場所から
+	ldi r19, 65
+wait_post_loop2:
+	dec r19
+	brne wait_post_loop2
+	nop
+	nop
 	dec r17
 	brne wait_loop1
+	; -- この場所までジャンプを含めて200クロック
 	ret
