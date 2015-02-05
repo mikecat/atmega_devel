@@ -1,0 +1,119 @@
+; hello, world for ATmega328P
+
+; 内部クロック(8MHz)を用い、
+; およそ9600bpsのシリアル通信で"hello, world"を出力します。
+
+; Extended Fuse Byte = 0x07
+; Fuse High Byte     = 0xDF
+; Fuse Low Byte      = 0xE2
+
+; 割り込みベクタ
+jmp reset_handler
+jmp int0_handler
+jmp int1_handler
+jmp pcint0_handler
+jmp pcint1_handler
+jmp pcint2_handler
+jmp wdt_handler
+jmp timer2_compa_handler
+jmp timer2_compb_handler
+jmp timer2_ovf_handler
+jmp timer1_capt_handller
+jmp timer1_compa_handler
+jmp timer1_compb_handler
+jmp timer1_ovf_handler
+jmp timer16_compa_handler
+jmp timer16_compb_handler
+jmp timer16_ovf_handler
+jmp spi_stc_handler
+jmp usart_rx_handler
+jmp usart_udre_handler
+jmp usatr_tx_handler
+jmp adc_handler
+jmp ee_ready_handler
+jmp analog_comp_handler
+jmp twi_handler
+jmp spm_ready_handler
+
+; 何もせずに戻る
+int0_handler:
+int1_handler:
+pcint0_handler:
+pcint1_handler:
+pcint2_handler:
+wdt_handler:
+timer2_compa_handler:
+timer2_compb_handler:
+timer2_ovf_handler:
+timer1_capt_handller:
+timer1_compa_handler:
+timer1_compb_handler:
+timer1_ovf_handler:
+timer16_compa_handler:
+timer16_compb_handler:
+timer16_ovf_handler:
+spi_stc_handler:
+usart_rx_handler:
+usart_udre_handler:
+usatr_tx_handler:
+adc_handler:
+ee_ready_handler:
+analog_comp_handler:
+twi_handler:
+spm_ready_handler:
+	reti
+
+; 送信するデータ
+data_to_send:
+	!word 0x6568
+	!word 0x6C6C
+	!word 0x2C6F
+	!word 0x7720
+	!word 0x726F
+	!word 0x646C
+	!word 0x0A0D
+	!word 0x0000
+
+; エントリポイント
+reset_handler:
+	; WDTを無効に設定する
+	ldi r16, 0x00
+	sts 0x60, r16
+	; PD1を出力に設定する
+	ldi r16, 0x02
+	out 0x0A, r16
+	; PD1をHIGHに設定する
+	out 0x0B, r16
+
+	; シリアル通信の速さの設定を行う
+	ldi r16, 0x00
+	sts 0xC5, r16
+	ldi r16, 51
+	sts 0xC4, r16
+	; データの位置を設定する
+	ldi r31, 0x00
+	ldi r30, data_to_send
+	lsl r30
+	rol r31
+	; 送信を開始する
+	ldi r16, 0x08
+	sts 0xC1, r16
+
+loop:
+	; 送信可能になるまで待機する
+	lds r16, 0xC0
+	andi r16, 0x20
+	breq loop
+	; 送信可能
+	lpmz+ r16
+	cpi r16, 0x00
+	breq send_end_of_data
+	; 送信を実行する
+	sts 0xC6, r16
+	rjmp loop
+send_end_of_data:
+	; データが無くなったので、送信機を停止する
+	ldi r16, 0x00
+	sts 0xC1, r16
+stop_program:
+	rjmp stop_program
