@@ -1,0 +1,108 @@
+; 100kHz出力 for ATmega328P
+
+; 水晶(16MHz)を用い、
+; ポートB0に100kHzの信号を出力します。
+
+; Extended Fuse Byte = 0x07
+; Fuse High Byte     = 0xDF
+; Fuse Low Byte      = 0xE7
+
+; 割り込みベクタ
+jmp reset_handler
+jmp int0_handler
+jmp int1_handler
+jmp pcint0_handler
+jmp pcint1_handler
+jmp pcint2_handler
+jmp wdt_handler
+jmp timer2_compa_handler
+jmp timer2_compb_handler
+jmp timer2_ovf_handler
+jmp timer1_capt_handller
+jmp timer1_compa_handler
+jmp timer1_compb_handler
+jmp timer1_ovf_handler
+jmp timer16_compa_handler
+jmp timer16_compb_handler
+jmp timer16_ovf_handler
+jmp spi_stc_handler
+jmp usart_rx_handler
+jmp usart_udre_handler
+jmp usatr_tx_handler
+jmp adc_handler
+jmp ee_ready_handler
+jmp analog_comp_handler
+jmp twi_handler
+jmp spm_ready_handler
+
+; 何もせずに戻る
+int0_handler:
+int1_handler:
+pcint0_handler:
+pcint1_handler:
+pcint2_handler:
+wdt_handler:
+timer2_compa_handler:
+timer2_compb_handler:
+timer2_ovf_handler:
+timer1_capt_handller:
+timer1_compa_handler:
+timer1_compb_handler:
+timer1_ovf_handler:
+timer16_compa_handler:
+timer16_compb_handler:
+timer16_ovf_handler:
+spi_stc_handler:
+usart_rx_handler:
+usart_udre_handler:
+usatr_tx_handler:
+adc_handler:
+ee_ready_handler:
+analog_comp_handler:
+twi_handler:
+spm_ready_handler:
+	reti
+
+; エントリポイント
+reset_handler:
+	; WDTを無効に設定する
+	ldi r16, 0x00
+	sts 0x60, r16
+	; B0を出力に、Bn(n=1, ... ,7)を入力に設定する
+	ldi r16, 0x01
+	out 0x04, r16
+	; 16MHzの場合、1周160サイクルで100kHzになる
+	; Googleで「(16MHz)/(100kHz)」と検索すると求まる
+loop:
+	; B0をLOWに設定する
+	ldi r16, 0x00 ; 1 cycle
+	out 0x05, r16 ; 1 cycle
+	; ウェイトを入れる
+	rcall wait
+	; 戻る分を調整する
+	nop ; 2 cycles
+	nop
+	; B0をHIGHに設定する
+	ldi r16, 0x01 ; 1 cycle
+	out 0x05, r16 ; 1 cycle
+	; ウェイトを入れる
+	rcall wait
+	; 戻る
+	rjmp loop ; 2 cycles
+
+; 80 - 4 = 76 サイクルのウェイトを入れる
+wait:
+	; rcall : 3 cycles
+
+	; 76 - (3 + 4) = 69 サイクルのウェイトを入れる
+	ldi r16, 23 ; 1 cycle
+
+	; brneをr16が22, 21, ..., 1で通過する -> 3 * 22 = 66 cycles
+	; brneをr16が0で通過する -> 2 cycles
+wait_loop:
+	dec r16 ; 1 cycle
+	brne wait_loop ; 2 cycles (ジャンプするとき)
+
+	; 1 + 66 + 2 = 69 cycles
+
+	ret ; 4 cycles
