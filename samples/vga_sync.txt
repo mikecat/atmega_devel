@@ -1,0 +1,251 @@
+; VGA同期信号出力 for ATmega328P
+
+; 水晶(16MHz)を用い、
+; ポートB0にHsync,B1にVsyncの信号を出力します。
+; ポートB2に適当な映像信号を出力します。
+
+; 参考: http://astra.digi2.jp/a/e/vesa-dmt-modeline.html
+; バックアップ: https://archive.today/d2F4J
+; 640x480, 60Hz
+; ※2015/3/8現在、このサイトの640x480@60Hzのhfreqとvfreqの情報は正しくないようです。
+; vfp=39, vs=8, vbp=129 に設定することで、vfreqがおよそ60.023となります。
+; また、hfreqは39.375のはずです。
+
+; 31.5MHz -> 32MHzにするとおよそ61Hz
+; 0----------------------------------------------640---656+++752-----800
+
+; 16MHz -> 半分にする
+; 0----------------------------------------------320---328+++376-----400
+
+; 位置変更
+; 0+++48-----72----------------------------------------------392---400
+;   ^ Sync
+
+; Extended Fuse Byte = 0x07
+; Fuse High Byte     = 0xDF
+; Fuse Low Byte      = 0xE7
+
+; 割り込みベクタ
+jmp reset_handler
+jmp int0_handler
+jmp int1_handler
+jmp pcint0_handler
+jmp pcint1_handler
+jmp pcint2_handler
+jmp wdt_handler
+jmp timer2_compa_handler
+jmp timer2_compb_handler
+jmp timer2_ovf_handler
+jmp timer1_capt_handller
+jmp timer1_compa_handler
+jmp timer1_compb_handler
+jmp timer1_ovf_handler
+jmp timer16_compa_handler
+jmp timer16_compb_handler
+jmp timer16_ovf_handler
+jmp spi_stc_handler
+jmp usart_rx_handler
+jmp usart_udre_handler
+jmp usatr_tx_handler
+jmp adc_handler
+jmp ee_ready_handler
+jmp analog_comp_handler
+jmp twi_handler
+jmp spm_ready_handler
+
+; 何もせずに戻る
+int0_handler:
+int1_handler:
+pcint0_handler:
+pcint1_handler:
+pcint2_handler:
+wdt_handler:
+timer2_compa_handler:
+timer2_compb_handler:
+timer2_ovf_handler:
+timer1_capt_handller:
+timer1_compa_handler:
+timer1_compb_handler:
+timer1_ovf_handler:
+timer16_compa_handler:
+timer16_compb_handler:
+timer16_ovf_handler:
+spi_stc_handler:
+usart_rx_handler:
+usart_udre_handler:
+usatr_tx_handler:
+adc_handler:
+ee_ready_handler:
+analog_comp_handler:
+twi_handler:
+spm_ready_handler:
+	reti
+
+; エントリポイント
+reset_handler:
+	; WDTを無効に設定する
+	ldi r16, 0x00
+	sts 0x60, r16
+	; B0,B1,B2を出力に、Bn(n=3, ... ,7)を入力に設定する
+	ldi r16, 0x07
+	out 0x04, r16
+
+v_loop:
+	; ----------- FP -----------
+	ldi r17, 39
+fp_begin:
+	; Hsync = LOW
+	; wait 48 clocks
+	cbi 0x05, 0
+	rcall zero_frame
+	; wait 8 clocks (4 clocks left)
+	nop
+	dec r17
+	brne fp_begin
+	; ----------- Vsync -----------
+	cbi 0x05,1 ; small error of 2 clocks
+	ldi r17, 8
+vsync_begin:
+	; Hsync = LOW
+	; wait 48 clocks
+	cbi 0x05, 0
+	rcall zero_frame
+	; wait 8 clocks (4 clocks left)
+	nop
+	dec r17
+	brne vsync_begin
+	; ----------- BP -----------
+	sbi 0x05,1 ; small error of 2 clocks
+	ldi r17, 129
+bp_begin:
+	; Hsync = LOW
+	; wait 48 clocks
+	cbi 0x05, 0
+	rcall zero_frame
+	; wait 8 clocks (4 clocks left)
+	nop
+	dec r17
+	brne bp_begin
+	; ----------- frames -----------
+	ldi r17, 240
+frames_begin:
+	; Hsync = LOW
+	; wait 48 clocks
+	cbi 0x05, 0
+	rcall frame1
+	; wait 8 clocks (4 clocks left)
+	nop
+	nop
+	nop
+	nop
+	; Hsync = LOW
+	; wait 48 clocks
+	cbi 0x05, 0
+	rcall frame2
+	; wait 8 clocks (4 clocks left)
+	nop
+	dec r17
+	brne frames_begin
+
+	rjmp v_loop ; small error of 2 clocks
+
+zero_frame:
+	; rcall 3 clocks
+	; (Hsync = LOW, wait 48 clocks: 43 clocks left)
+	ldi r16, 14
+zero_frame_wait1:
+	dec r16
+	brne zero_frame_wait1
+	nop
+	; Hsync = HIGH
+	; wait 24 clocks
+	sbi 0x05, 0
+	ldi r16, 7
+zero_frame_wait2:
+	dec r16
+	brne zero_frame_wait2
+	nop
+	; dummy frame
+	; wait 320 clocks
+	ldi r16, 106
+zero_frame_wait3:
+	dec r16
+	brne zero_frame_wait3
+	nop
+	nop
+	; next
+	; wait 8 clocks
+	ret ; 4 clocks
+
+frame1:
+	; rcall 3 clocks
+	; (Hsync = LOW, wait 48 clocks: 43 clocks left)
+	ldi r16, 14
+frame1_wait1:
+	dec r16
+	brne frame1_wait1
+	nop
+	; Hsync = HIGH
+	; wait 24 clocks
+	sbi 0x05, 0
+	ldi r16, 7
+frame1_wait2:
+	dec r16
+	brne frame1_wait2
+	nop
+	; on
+	sbi 0x05,2
+	; wait 160 clocks
+	ldi r16, 52
+frame1_wait3:
+	dec r16
+	brne frame1_wait3
+	nop
+	nop
+	; off
+	cbi 0x05,2
+	; wait160 clocks
+	ldi r16, 52
+frame1_wait4:
+	dec r16
+	brne frame1_wait4
+	nop
+	nop
+	; next
+	; wait 8 clocks
+	ret ; 4 clocks
+
+frame2:
+	; rcall 3 clocks
+	; (Hsync = LOW, wait 48 clocks: 43 clocks left)
+	ldi r16, 14
+frame2_wait1:
+	dec r16
+	brne frame2_wait1
+	nop
+	; Hsync = HIGH
+	; wait 24 clocks
+	sbi 0x05, 0
+	ldi r16, 7
+frame2_wait2:
+	dec r16
+	brne frame2_wait2
+	nop
+	; off
+	; wait 157 clocks
+	ldi r16, 52
+frame2_wait3:
+	dec r16
+	brne frame2_wait3
+	nop
+	; on
+	sbi 0x05,2
+	; wait 163 clocks
+	ldi r16, 53
+frame2_wait4:
+	dec r16
+	brne frame2_wait4
+	cbi 0x05,2
+	; next
+	; wait 8 clocks
+	ret ; 4 clocks
