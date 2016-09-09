@@ -1,10 +1,10 @@
-AVRのプログラムを書くやつ(仮)
+ATmegaのプログラムを書くやつ(仮)
 =============================
 
-AVRのプログラムを書くためのツールです。
+ATmega系マイコンのプログラムを書くためのツールです。
 
-プログラムをAVRに書き込むには、
-[AVRを読み書きするやつ](https://github.com/mikecat/avr_io)などが利用できます。
+プログラムをマイコンに書き込むには、
+[ATmegaを読み書きするやつ](https://github.com/mikecat/atmega_io)などが利用できます。
 
 ### 仕様
 
@@ -35,7 +35,7 @@ AVRのプログラムを書くためのツールです。
 
 ### 参考資料
 * [Atmel AVR 8-bit and 32-bit Microcontrollers](http://www.atmel.com/products/microcontrollers/avr/?tab=documents)  
-  このページの"AVR Instruction Set"にAVRの命令(ニモニックと機械語)が載っています。
+  このページの"AVR Instruction Set"にATmega系マイコンの命令(ニモニックと機械語)が載っています。
 
 ### 命令に関するメモ
 
@@ -51,8 +51,8 @@ AVRのプログラムを書くためのツールです。
   * 0x20番地～0xFF番地のPICでいうSFR的な奴はLDS命令やSTS命令などでアクセス可能
   * レジスタはRAMの0x00番地～0x1F番地
 
-x86命令     |似たAVR命令
-------------|-----------
+x86命令     |ATmega系マイコンの似た命令
+------------|--------------------------
 add r8,r8   |add
 add r16,imm8|(adiw)
 adc r8,r8   |adc
